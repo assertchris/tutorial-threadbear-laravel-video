@@ -28,4 +28,15 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token', "stripe_token"
     ];
+    
+    /**
+     * User has many products
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function products()
+    {
+        return $this->hasMany(Product::class);
+    }
+    
 }
