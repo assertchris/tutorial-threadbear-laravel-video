@@ -15,7 +15,7 @@ class ProductController extends Controller
     public function index()
     {
         return view("products.index", [
-            "products" => Product::all(),
+            "products" => Product::where("user_id", auth()->user()->id)->get(),
         ]);
     }
 
@@ -26,7 +26,7 @@ class ProductController extends Controller
      */
     public function create()
     {
-        //
+        return view("products.create");
     }
 
     /**
@@ -37,7 +37,15 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $values = $this->validate($request, [
+            "name" => "required",
+            "description" => "required",
+            "price" => "required|numeric",
+        ]);
+
+        Product::create($values + ["user_id" => auth()->user()->id]);
+
+        return redirect()->route("products.index");
     }
 
     /**
@@ -48,7 +56,7 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        //
+        return view("products.show", compact("product"));
     }
 
     /**
@@ -59,7 +67,9 @@ class ProductController extends Controller
      */
     public function edit(Product $product)
     {
-        //
+        return view("products.edit", [
+            "product" => $product,
+        ]);
     }
 
     /**
@@ -71,7 +81,15 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
-        //
+        $values = $this->validate($request, [
+            "name" => "required",
+            "description" => "required",
+            "price" => "required|numeric",
+        ]);
+
+        $product->update($values);
+
+        return redirect()->route("products.index");
     }
 
     /**
@@ -82,6 +100,16 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        //
+        $product->delete();
+
+        return redirect()->route("products.index");
+    }
+
+    public function purchase(Product $product)
+    {
+        $user = auth()->user();
+        $user->charge($product->price * 100);
+
+        return redirect()->route("products.index");
     }
 }
