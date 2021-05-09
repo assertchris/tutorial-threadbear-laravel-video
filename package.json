@@ -13,7 +13,7 @@
         "axios": "^0.16.2",
         "cross-env": "^5.0.1",
         "laravel-mix": "^1.0",
-        "lodash": "^4.17.4"
+        "lodash": "^4.17.21"
     },
     "dependencies": {
         "bootstrap-sass": "^3.3.7"
